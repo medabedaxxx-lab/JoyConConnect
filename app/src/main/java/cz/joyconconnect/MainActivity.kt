@@ -83,21 +83,34 @@ class MainActivity : Activity() {
     }
 
 private fun showDevices() {
-    val devices = InputDevice.getDeviceIds()
-        .mapNotNull { deviceId ->
-            InputDevice.getDevice(deviceId)
-        }
-        .filter { device ->
-            device.supportsSource(InputDevice.SOURCE_GAMEPAD) ||
-            device.supportsSource(InputDevice.SOURCE_JOYSTICK)
-        }
+    val devices = ArrayList<InputDevice>()
+    val deviceIds: IntArray = InputDevice.getDeviceIds()
 
-    statusText.text = if (devices.isEmpty()) {
-        "Žádný herní ovladač zatím není rozpoznán.\n\nPřipoj Joy-Con přes Bluetooth a potom obnov seznam."
-    } else {
-        "Rozpoznané ovladače:\n\n" + devices.joinToString("\n\n") { device ->
-            "🎮 ${device.name}\nID: ${device.id}"
+    for (deviceId: Int in deviceIds) {
+        val device: InputDevice? = InputDevice.getDevice(deviceId)
+        if (device != null) {
+            val isGamepad: Boolean =
+                device.supportsSource(InputDevice.SOURCE_GAMEPAD) ||
+                device.supportsSource(InputDevice.SOURCE_JOYSTICK)
+            if (isGamepad) {
+                devices.add(device)
+            }
         }
+    }
+
+    if (devices.size == 0) {
+        statusText.text =
+            "Žádný herní ovladač zatím není rozpoznán.\n\nPřipoj Joy-Con přes Bluetooth a potom obnov seznam."
+    } else {
+        val result = StringBuilder("Rozpoznané ovladače:\n\n")
+        for (device: InputDevice in devices) {
+            result.append("🎮 ")
+            result.append(device.name)
+            result.append("\nID: ")
+            result.append(device.id)
+            result.append("\n\n")
+        }
+        statusText.text = result.toString()
     }
 }
 
