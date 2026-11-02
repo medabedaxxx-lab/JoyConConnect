@@ -84,13 +84,11 @@ class MainActivity : Activity() {
 
     private fun showDevices() {
         val devices = InputDevice.getDeviceIds()
-            .mapNotNull { InputDevice.getDevice(it) }
-            .filter 
+            .mapNotNull { InputDevice.getDevice(it) }    
+.filter {
     it.supportsSource(InputDevice.SOURCE_GAMEPAD) ||
     it.supportsSource(InputDevice.SOURCE_JOYSTICK)
-            } 
-            }
-
+}
         statusText.text = if (devices.isEmpty()) {
             "Žádný herní ovladač zatím není rozpoznán.\n\nPřipoj Joy-Con přes Bluetooth a potom obnov seznam."
         } else {
