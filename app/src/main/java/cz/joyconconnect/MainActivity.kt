@@ -82,21 +82,24 @@ class MainActivity : Activity() {
         showDevices()
     }
 
-    private fun showDevices() {
-        val devices = InputDevice.getDeviceIds()
-            .mapNotNull { InputDevice.getDevice(it) }    
-.filter {
-    it.supportsSource(InputDevice.SOURCE_GAMEPAD) ||
-    it.supportsSource(InputDevice.SOURCE_JOYSTICK)
-}
-        statusText.text = if (devices.isEmpty()) {
-            "Žádný herní ovladač zatím není rozpoznán.\n\nPřipoj Joy-Con přes Bluetooth a potom obnov seznam."
-        } else {
-            "Rozpoznané ovladače:\n\n" + devices.joinToString("\n\n") {
-                "🎮 ${it.name}\nID: ${it.id}"
-            }
+private fun showDevices() {
+    val devices = InputDevice.getDeviceIds()
+        .mapNotNull { deviceId ->
+            InputDevice.getDevice(deviceId)
+        }
+        .filter { device ->
+            device.supportsSource(InputDevice.SOURCE_GAMEPAD) ||
+            device.supportsSource(InputDevice.SOURCE_JOYSTICK)
+        }
+
+    statusText.text = if (devices.isEmpty()) {
+        "Žádný herní ovladač zatím není rozpoznán.\n\nPřipoj Joy-Con přes Bluetooth a potom obnov seznam."
+    } else {
+        "Rozpoznané ovladače:\n\n" + devices.joinToString("\n\n") { device ->
+            "🎮 ${device.name}\nID: ${device.id}"
         }
     }
+}
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {
         eventText.text = "Stisknuté tlačítko:\n${KeyEvent.keyCodeToString(keyCode)}"
