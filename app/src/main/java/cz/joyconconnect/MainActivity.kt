@@ -85,9 +85,10 @@ class MainActivity : Activity() {
     private fun showDevices() {
         val devices = InputDevice.getDeviceIds()
             .mapNotNull { InputDevice.getDevice(it) }
-            .filter {
-                it.sources and InputDevice.SOURCE_GAMEPAD == InputDevice.SOURCE_GAMEPAD ||
-                it.sources and InputDevice.SOURCE_JOYSTICK == InputDevice.SOURCE_JOYSTICK
+            .filter 
+    it.supportsSource(InputDevice.SOURCE_GAMEPAD) ||
+    it.supportsSource(InputDevice.SOURCE_JOYSTICK)
+            } 
             }
 
         statusText.text = if (devices.isEmpty()) {
